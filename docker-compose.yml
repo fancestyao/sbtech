@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:13.7-alpine
+    volumes:
+      - /var/lib/postgresql/data
+    container_name: db_for_sbtech
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=sbtechDb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sbtech_server
+    ports:
+      - "9090:9090"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/sbtechDb
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=sbtechDb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
